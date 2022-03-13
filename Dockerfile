@@ -1,20 +1,22 @@
 FROM golang:alpine AS builder
 # Install git.
 # Git is required for fetching the dependencies.
-RUN apk update && apk add --no-cache git ffmpeg
-WORKDIR $GOPATH/src/freezeframe/
+RUN apk update && apk add --no-cache git
+WORKDIR /app
 COPY . .
+
 # Fetch dependencies.
-# Using go get.
-RUN go get -d -v
+RUN go mod download
+
+
 # Build the binary.
-RUN go build -o /go/bin/freezeframe
+RUN CGO_ENABLED=0 go build -o freezeframe
 ############################
 # STEP 2 build a small image
 ############################
-FROM scratch
+FROM jrottenberg/ffmpeg:4.4-scratch
 # Copy our static executable.
-COPY --from=builder /go/bin/freezeframe /go/bin/freezeframe
+COPY --from=builder /app/freezeframe /
 EXPOSE 3001
 # Run the hello binary.
-ENTRYPOINT ["/go/bin/freezeframe"]
+ENTRYPOINT ["/freezeframe"]
