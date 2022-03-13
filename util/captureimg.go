@@ -16,7 +16,6 @@ func CaptureStream(url string) (io.Reader, error) {
 		Run()
 
 	if err != nil {
-		panic(err)
 		return nil, err
 	}
 	return buf, nil
