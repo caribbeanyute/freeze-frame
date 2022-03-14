@@ -8,6 +8,6 @@ import (
 func SetupRoutes(app *fiber.App) {
 	// Middleware
 	api := app.Group("/api")
-	api.Get("/thumbnail", handler.GetFrame)
+	api.Post("/thumbnail", handler.GetFrame)
 
 }
